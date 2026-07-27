@@ -1,0 +1,55 @@
+.settings-page{
+
+    padding:30px;
+
+}
+
+.settings-card{
+
+    border:none;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.settings-card .card-header{
+
+    background:white;
+
+    font-weight:600;
+
+}
+
+.settings-card .card-body{
+
+    padding:25px;
+
+}
+
+.form-control{
+
+    border-radius:10px;
+
+}
+
+.form-select{
+
+    border-radius:10px;
+
+}
+
+.save-btn{
+
+    margin-top:15px;
+
+    width:100%;
+
+}
+
+.form-check{
+
+    margin-bottom:12px;
+
+}

@@ -1,0 +1,193 @@
+.topbar{
+
+    height:80px;
+
+    background:#fff;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 35px;
+
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+.topbar-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:30px;
+
+}
+
+.menu-btn{
+
+    border:none;
+
+    background:none;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    color:#64748b;
+
+}
+
+.topbar-left h4{
+
+    font-size:28px;
+
+    font-weight:500;
+
+}
+
+/* Search */
+
+.search-box{
+
+    width:420px;
+
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+
+    background:#f7f8fb;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:12px;
+
+    padding:0 15px;
+
+}
+
+.search-icon{
+
+    color:#94a3b8;
+
+}
+
+.search-box input{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    padding:0 12px;
+
+    font-size:15px;
+
+}
+
+.search-box span{
+
+    padding:5px 10px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:6px;
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+/* Right */
+
+.topbar-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:25px;
+
+}
+
+.docs-btn{
+
+    padding:10px 24px;
+
+    border-radius:10px;
+
+    border:1px solid #20c997;
+
+    background:white;
+
+    color:#20c997;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+.icon{
+
+    font-size:22px;
+
+    color:#64748b;
+
+    cursor:pointer;
+
+}
+
+.notification{
+
+    position:relative;
+
+}
+
+.notification span{
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:red;
+
+    position:absolute;
+
+    top:-2px;
+
+    right:-2px;
+
+}
+
+.profile{
+
+    width:45px;
+
+    height:45px;
+
+    border-radius:50%;
+
+    background:#20c997;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:bold;
+
+}

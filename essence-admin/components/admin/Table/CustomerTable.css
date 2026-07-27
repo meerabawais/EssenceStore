@@ -1,0 +1,74 @@
+.table-card{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    overflow:auto;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+th{
+
+    text-align:left;
+
+    padding:18px;
+
+    background:#f7f8fb;
+
+}
+
+td{
+
+    padding:18px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+.status{
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    color:white;
+
+    font-size:13px;
+
+}
+
+.pending{
+
+    background:#f59e0b;
+}
+
+.processing{
+
+    background:#3b82f6;
+}
+
+.shipped{
+
+    background:#8b5cf6;
+}
+
+.delivered{
+
+    background:#10b981;
+}
+
+.cancelled{
+
+    background:#ef4444;
+}

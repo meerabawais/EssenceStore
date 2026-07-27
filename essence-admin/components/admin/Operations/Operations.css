@@ -1,0 +1,272 @@
+.operations-page{
+
+padding:30px;
+
+background:#f5f7fb;
+
+min-height:100vh;
+
+}
+
+.operations-header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:35px;
+
+}
+
+.page-pretitle{
+
+font-size:13px;
+
+font-weight:700;
+
+color:#7b8794;
+
+letter-spacing:1px;
+
+margin-bottom:6px;
+
+}
+
+.page-title{
+
+font-size:38px;
+
+font-weight:600;
+
+margin:0;
+
+}
+
+.page-actions{
+
+display:flex;
+
+gap:15px;
+
+}
+
+.btn-outline{
+
+padding:12px 22px;
+
+border-radius:10px;
+
+background:white;
+
+border:1px solid #ddd;
+
+}
+
+.btn-primary{
+
+padding:12px 24px;
+
+background:#16c79a;
+
+border:none;
+
+color:white;
+
+border-radius:10px;
+
+font-weight:600;
+
+}
+
+.kpi-grid{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:25px;
+
+margin-bottom:30px;
+
+}
+
+.kpi-card{
+
+background:white;
+
+border-radius:16px;
+
+padding:22px;
+
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+transition:.3s;
+
+}
+
+.kpi-card:hover{
+
+transform:translateY(-5px);
+
+}
+
+.kpi-card h6{
+
+margin-bottom:6px;
+
+font-size:15px;
+
+font-weight:600;
+
+}
+
+.kpi-card small{
+
+color:#8c8c8c;
+
+display:block;
+
+margin-bottom:20px;
+
+}
+
+.kpi-card h2{
+
+font-size:34px;
+
+margin-bottom:10px;
+
+font-weight:700;
+
+}
+
+.kpi-card p{
+
+margin:0;
+
+color:#16c79a;
+
+font-size:14px;
+
+font-weight:600;
+
+}
+
+@media(max-width:1200px){
+
+.kpi-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:768px){
+
+.operations-header{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:20px;
+
+}
+
+.kpi-grid{
+
+grid-template-columns:1fr;
+
+}
+
+}
+/* ======================
+   CHARTS
+====================== */
+
+.charts-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 2fr;
+
+    gap:25px;
+
+    margin-bottom:30px;
+
+}
+
+.dashboard-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    overflow:hidden;
+
+}
+
+.card-header{
+
+    padding:22px;
+
+    border-bottom:1px solid #ececec;
+
+}
+
+.card-header h5{
+
+    margin:0;
+
+    font-size:20px;
+
+    font-weight:700;
+
+}
+
+.card-header p{
+
+    margin-top:6px;
+
+    color:#7b8794;
+
+    font-size:14px;
+
+}
+
+.chart-placeholder{
+
+    height:260px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#9ca3af;
+
+    font-size:18px;
+
+    background:#fafafa;
+
+}
+.recent-orders {
+    margin-top: 30px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+}
+
+.recent-orders h3 {
+    margin-bottom: 15px;
+}
+
+.table {
+    width: 100%;
+}

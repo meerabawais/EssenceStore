@@ -1,0 +1,49 @@
+.forms-page{
+    padding:30px;
+    background:#f5f7fb;
+}
+
+.forms-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.forms-body{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:30px;
+}
+
+.header-buttons{
+    display:flex;
+    gap:12px;
+}
+
+.header-buttons button{
+    padding:12px 22px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    background:white;
+    cursor:pointer;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    margin-bottom:25px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+    padding: 40px;
+    font-size: medium;
+}
+
+.card-header{
+    padding:25px;
+    border-bottom:1px solid #eee;
+}
+
+.card-body{
+    padding:25px;
+}
