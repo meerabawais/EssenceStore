@@ -55,10 +55,10 @@ export async function getSessionPayload() {
 
 export async function getSessionUser() {
   const payload = await getSessionPayload();
-  if (!payload) return null;
+  if (!payload || payload.role !== "USER") return null;
 
   const user = await prisma.user.findUnique({ where: { id: payload.sub } });
-  if (!user) return null;
+  if (!user || user.role !== "USER") return null;
 
   return { id: user.id, name: user.name, email: user.email, role: user.role };
 }
