@@ -18,7 +18,7 @@ export default function ProfileCard({user, setUser}){
                     <div className="col-md-4 text-center">
 
                         <img
-                            src="/profile.png"
+                            src="/admin/profile.png"
                             className="profile-avatar mb-3"
                             alt=""
                         />

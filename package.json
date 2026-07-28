@@ -1,0 +1,15 @@
+{
+  "name": "essence-store-root",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Orchestrates mystore, essence-admin, and the gateway as a single website",
+  "scripts": {
+    "postinstall": "npm install --prefix mystore && npm install --prefix essence-admin && npm install --prefix gateway",
+    "dev": "concurrently -n STORE,ADMIN,GATEWAY -c blue,magenta,green --kill-others --kill-others-on-fail \"npm run dev --prefix mystore\" \"npm run dev --prefix essence-admin\" \"npm run dev --prefix gateway\"",
+    "build": "npm run build --prefix mystore && npm run build --prefix essence-admin",
+    "start": "concurrently -n STORE,ADMIN,GATEWAY -c blue,magenta,green --kill-others --kill-others-on-fail \"npm run start --prefix mystore\" \"npm run start --prefix essence-admin\" \"npm run start --prefix gateway\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
