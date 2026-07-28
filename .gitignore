@@ -3,3 +3,15 @@ node_modules/
 .env.local
 *.log
 .DS_Store
+
+# Claude Code
+.claude/
+CLAUDE.md
+.claude.json
+
+# Windsurf
+.windsurf/
+.windsurfrules
+
+# Agents
+.agents/
