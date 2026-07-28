@@ -1,5 +1,6 @@
 import { PrismaClient, DiscountType } from "@prisma/client";
 import products from "../data/Products.js";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -84,6 +85,14 @@ await prisma.subCategory.create({
 await prisma.subCategory.create({
   data: { name: "Trench", categoryId: kids.id },
 });
+await prisma.user.create({
+  data:{
+    name:"Administrator",
+    email:"admin@essence.com",
+    password: hashedPassword,
+    role:"ADMIN",
+  }
+})
 
   for (const item of products) {
 
