@@ -11,7 +11,11 @@ export function middleware(request) {
   const token = request.cookies.get(TOKEN_COOKIE)?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    // request.nextUrl is basePath-aware, unlike a plain `new URL(..., request.url)`
+    // (which would produce a bare "/login" that 404s once basePath is stripped).
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
