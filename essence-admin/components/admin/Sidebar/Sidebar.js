@@ -180,6 +180,15 @@ export default function Sidebar({isOpen}) {
             Settings
           </Link>
 
+          <Link
+            href="/logout"
+            className={
+              isActive("/logout") ? "active" : ""
+            }
+          >
+            Logout
+          </Link>
+
         </div>
 
       </nav>

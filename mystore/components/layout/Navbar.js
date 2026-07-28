@@ -5,10 +5,12 @@ import Image from "next/image";
 import { FaSearch, FaHeart, FaUser, FaShoppingBag } from "react-icons/fa";
 import Cartsidebar from "./Cartsidebar";
 import Dropdown from "../Home/Dropdown";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const[pages,showPages] = useState(false);
   const[isCartOpen, setIsCartOpen] = useState(false);
+  const { user } = useAuth();
   return (
     <>
     <header className="header_area">
@@ -90,7 +92,7 @@ export default function Navbar() {
           </div>
 
           <div className="user-login-info">
-            <Link href="/login">
+            <Link href={user ? "/user/dashboard" : "/account/login"}>
               <FaUser />
             </Link>
           </div>
