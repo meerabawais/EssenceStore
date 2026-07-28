@@ -1,9 +1,9 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
-const PORT = process.env.GATEWAY_PORT || 3000;
-const STORE_TARGET = process.env.STORE_ORIGIN || "http://localhost:3001";
-const ADMIN_TARGET = process.env.ADMIN_ORIGIN || "http://localhost:3002";
+const PORT = process.env.GATEWAY_PORT || 3001;
+const STORE_TARGET = process.env.STORE_ORIGIN || "http://localhost:3002";
+const ADMIN_TARGET = process.env.ADMIN_ORIGIN || "http://localhost:3003";
 
 const app = express();
 
