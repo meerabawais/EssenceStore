@@ -4,10 +4,20 @@ import { useState, useEffect } from "react";
 
 export default function ProductModal({ product, categories, onClose, onSave }) {
   const [formData, setFormData] = useState(product);
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
     setFormData(product);
   }, [product]);
+  useEffect(() => {
+  async function loadImages() {
+    const res = await fetch("/admin/api/Images");
+    const data = await res.json();
+    setImages(data);
+  }
+
+  loadImages();
+}, []);
 
   if (!formData) return null;
 
@@ -278,45 +288,63 @@ export default function ProductModal({ product, categories, onClose, onSave }) {
               {/* Image1 */}
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Image 1 URL</label>
+                <label className="form-label">Image 1</label>
 
-                <input
-                  className="form-control"
-                  value={formData.variant.image1 ?? ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
+               <select
+  className="form-select"
+  value={formData.variant.image1 ?? ""}
+  onChange={(e) =>
+    setFormData((prev) => ({
+      ...prev,
+      variant: {
+        ...prev.variant,
+        image1: e.target.value,
+      },
+    }))
+  }
+>
+  <option value="">Select Image</option>
 
-                      variant: {
-                        ...prev.variant,
-
-                        image1: e.target.value,
-                      },
-                    }))
-                  }
-                />
+  {images.map((image) => (
+    <option
+      key={image.path}
+      value={image.path}
+    >
+      {image.name}
+    </option>
+  ))}
+</select>
               </div>
 
               {/* Image2 */}
 
               <div className="col-md-6 mb-3">
-                <label className="form-label">Image 2 URL</label>
+                <label className="form-label">Image 2</label>
 
-                <input
-                  className="form-control"
-                  value={formData.variant.image2 ?? ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
+               <select
+  className="form-select"
+  value={formData.variant.image2 ?? ""}
+  onChange={(e) =>
+    setFormData((prev) => ({
+      ...prev,
+      variant: {
+        ...prev.variant,
+        image2: e.target.value,
+      },
+    }))
+  }
+>
+  <option value="">Select Image</option>
 
-                      variant: {
-                        ...prev.variant,
-
-                        image2: e.target.value,
-                      },
-                    }))
-                  }
-                />
+  {images.map((image) => (
+    <option
+      key={image.path}
+      value={image.path}
+    >
+      {image.name}
+    </option>
+  ))}
+</select>
               </div>
             </div>
 

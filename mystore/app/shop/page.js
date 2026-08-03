@@ -1,8 +1,15 @@
-import BreadCrumb from"@/components/layout/BreadCrumb";
+import BreadCrumb from "@/components/layout/BreadCrumb";
 import BlogSidebar from "@/components/blog/BlogSidebar";
 import ProductGrid from "@/components/products/ProductGrid";
 
-export default function ShopPage() {
+
+export default async function ShopPage({ searchParams }) {
+  const params = await searchParams;
+
+  const categoryId = params.category;
+  const subCategoryId = params.subcategory;
+   const search = params?.search || "";
+
   return (
     <>
       <BreadCrumb />
@@ -16,7 +23,11 @@ export default function ShopPage() {
             </div>
 
             <div className="col-12 col-md-8 col-lg-9">
-              <ProductGrid />
+              <ProductGrid
+                categoryId={categoryId}
+                subCategoryId={subCategoryId}
+                search={search}
+              />
             </div>
 
           </div>

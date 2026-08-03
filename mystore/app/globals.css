@@ -196,3 +196,11 @@ a {
     height:auto;
     display:block;
 }
+.Register-link{
+     color: #000 !important;
+  text-decoration: underline;
+}
+.login-link{
+     color: #000 !important;
+  text-decoration: underline;
+}

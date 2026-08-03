@@ -26,7 +26,6 @@ export async function POST(request) {
             ...data
 
         } = body;
-
         const order = await prisma.order.create({
 
             data: {
@@ -44,6 +43,7 @@ export async function POST(request) {
                         variantId: Number(item.variantId),
 
                         productName: item.productName,
+                        productImage: item.productImage,
 
                         size: item.size,
 

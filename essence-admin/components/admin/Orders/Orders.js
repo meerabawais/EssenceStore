@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import Header from "./Header";
 import KPICards from "../Operations/KPI_Cards";
 import OrdersTable from "./OrderTable";
@@ -21,11 +20,11 @@ const [selectedOrder, setSelectedOrder] = useState(null);
 
         async function load() {
 
-            const statsRes = await fetch("/api/dashboard");
+            const statsRes = await fetch("/admin/api/dashboard");
             const statsData = await statsRes.json();
             setStats(statsData);
 
-            const ordersRes = await fetch("/api/All-orders");
+            const ordersRes = await fetch("/admin/api/All-orders");
             const ordersData = await ordersRes.json();
             setOrders(ordersData);
 
@@ -43,7 +42,7 @@ const [selectedOrder, setSelectedOrder] = useState(null);
 
     if (!confirm("Delete this order?")) return;
 
-    await fetch(`/api/All-orders/${id}`, {
+    await fetch(`/admin/api/All-orders/${id}`, {
         method: "DELETE",
     });
 
@@ -58,8 +57,8 @@ async function updateOrder(order) {
     const isEdit = !!order.id;
 
     const url = isEdit
-        ? `/api/All-orders/${order.id}`
-        : "/api/All-orders";
+        ? `/admin/api/All-orders/${order.id}`
+        : "/admin/api/All-orders";
 
     const method = isEdit ? "PUT" : "POST";
 

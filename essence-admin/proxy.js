@@ -24,5 +24,7 @@ export function proxy(request) {
 // matcher pattern and on request.nextUrl.pathname, so it's written without
 // the "/admin" prefix here.
 export const config = {
-  matcher: ["/((?!login|api/auth|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!api|login|_next/static|_next/image|favicon.ico).*)",
+  ],
 };

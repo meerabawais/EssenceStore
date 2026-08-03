@@ -7,121 +7,124 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Product {
-  id             Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  categoryId     Int
-  subCategoryId  Int
+  categoryId    Int
+  subCategoryId Int
 
-  brand          String
-  name           String
-  description    String
+  brand       String
+  name        String
+  description String
 
-  status         Boolean  @default(true)
+  status Boolean @default(true)
 
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  category        Category    @relation(fields: [categoryId], references: [id])
-  subCategory     SubCategory @relation(fields: [subCategoryId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
+  subCategory SubCategory @relation(fields: [subCategoryId], references: [id])
 
-  variants        Variant[]
+  variants Variant[]
 }
 
 model Category {
-  id            Int           @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  name          String
-  status        Boolean       @default(true)
-  image         String?
+  name   String
+  status Boolean @default(true)
+  image  String?
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   subCategories SubCategory[]
 
-  products      Product[]
+  products Product[]
 }
 
 model SubCategory {
-  id            Int           @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  categoryId    Int
+  categoryId Int
 
-  name          String
-  status        Boolean       @default(true)
-  image         String?
+  name   String
+  status Boolean @default(true)
+  image  String?
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  category      Category      @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
 
-  products      Product[]
+  products Product[]
 }
+
 model Variant {
-  id            Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  productId     Int
+  productId Int
 
-  size          String?
-  color         String?
+  size  String?
+  color String?
 
-  price         Float
+  price Float
 
-  stock         Int      @default(0)
+  stock Int @default(0)
 
-  image1        String?
-  image2        String?
+  image1 String?
+  image2 String?
 
   discountValue Float?
   discountType  DiscountType?
 
-  status        Boolean  @default(true)
+  status Boolean @default(true)
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   product Product @relation(fields: [productId], references: [id])
 }
+
 enum DiscountType {
   FIXED
   PERCENTAGE
 }
+
 model Order {
-  id              Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  firstName       String
-  lastName        String
-  company         String?
+  firstName String
+  lastName  String
+  company   String?
 
-  country         String
-  streetAddress   String
-  city            String
-  zipCode         Int
-  state           String
+  country       String
+  streetAddress String
+  city          String
+  zipCode       Int
+  state         String
 
-  phone           String
-  email           String
+  phone String
+  email String
 
-  paymentMethod   PaymentMethod
-  products        Json
+  paymentMethod PaymentMethod
+  products      Json
 
-  subtotal        Float
+  subtotal Float
 
-  tax             Float     @default(0)
+  tax Float @default(0)
 
-  gst             Float
+  gst Float
 
-  total           Float
+  total Float
 
-  status          OrderStatus @default(PENDING)
+  status OrderStatus @default(PENDING)
 
-  createdAt       DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  items           OrderItem[]
+  items OrderItem[]
 }
+
 enum PaymentMethod {
   CASH_ON_DELIVERY
   MASTER_CARD
@@ -138,37 +141,68 @@ enum OrderStatus {
 }
 
 model OrderItem {
-  id          Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  orderId     Int
+  orderId Int
 
-  productId   Int
-  variantId   Int
+  productId Int
+  variantId Int
 
   productName String
 
-  size        String?
-  color       String?
+  size  String?
+  color String?
 
-  quantity    Int
+  quantity Int
 
-  price       Float
+  price Float
 
-  total       Float
+  total Float
+   productImage String?
 
-  order       Order    @relation(fields: [orderId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  name        String
-  email       String   @unique
-  password    String
-  role        Role
-  createdAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+model ContactInfo {
+  id        Int              @id @default(autoincrement())
+  userId    Int?
+  userName  String
+  email     String
+  isStarred Boolean          @default(false)
+  isTrashed Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  messages  ContactMessage[]
+}
+
+model ContactMessage {
+  id        Int           @id @default(autoincrement())
+  contactId Int
+  sender    MessageSender
+  message   String
+
+  isRead Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  contact ContactInfo @relation(fields: [contactId], references: [id], onDelete: Cascade)
+}
+
+enum MessageSender {
+  ADMIN
+  CUSTOMER
 }

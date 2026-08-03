@@ -1,5 +1,7 @@
 "use client";
 
+import { ImStarEmpty } from "react-icons/im";
+
 export default function OrderItemsTable({items}){
     return(
         <>
@@ -13,6 +15,8 @@ export default function OrderItemsTable({items}){
                     <thead>
                         <tr>
                             <th>Product</th>
+                            <th>Product ID</th>
+                            <th>Variant ID</th>
                             <th>Size</th>
                             <th>Color</th>
                             <th>Qty</th>
@@ -26,6 +30,8 @@ export default function OrderItemsTable({items}){
                             items.map((item) => (
                                 <tr key={item.id}>
                                     <td>{item.productName}</td>
+                                    <td>{item.productId}</td>
+                                    <td>{item.variantId}</td>
                                     <td>{item.size || "-"}</td>
                                     <td>{item.color || "-"}</td>
                                     <td>{item.quantity}</td>

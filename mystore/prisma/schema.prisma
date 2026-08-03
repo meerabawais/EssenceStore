@@ -7,121 +7,137 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Product {
-  id             Int      @id @default(autoincrement())
-
-  categoryId     Int
-  subCategoryId  Int
-
-  brand          String
-  name           String
-  description    String
-
-  status         Boolean  @default(true)
-
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  category        Category    @relation(fields: [categoryId], references: [id])
-  subCategory     SubCategory @relation(fields: [subCategoryId], references: [id])
-
-  variants        Variant[]
+  id            Int         @id @default(autoincrement())
+  brand         String
+  name          String
+  description   String
+  createdAt     DateTime    @default(now())
+  categoryId    Int
+  status        Boolean     @default(true)
+  subCategoryId Int
+  updatedAt     DateTime    @updatedAt
+  category      Category    @relation(fields: [categoryId], references: [id])
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
+  variants      Variant[]
 }
 
 model Category {
   id            Int           @id @default(autoincrement())
-
   name          String
   status        Boolean       @default(true)
   image         String?
-
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-
-  subCategories SubCategory[]
-
   products      Product[]
+  subCategories SubCategory[]
 }
 
 model SubCategory {
-  id            Int           @id @default(autoincrement())
-
-  categoryId    Int
-
-  name          String
-  status        Boolean       @default(true)
-  image         String?
-
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-
-  category      Category      @relation(fields: [categoryId], references: [id])
-
-  products      Product[]
+  id         Int       @id @default(autoincrement())
+  categoryId Int
+  name       String
+  status     Boolean   @default(true)
+  image      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  products   Product[]
+  category   Category  @relation(fields: [categoryId], references: [id])
 }
+
 model Variant {
-  id            Int      @id @default(autoincrement())
-
+  id            Int           @id @default(autoincrement())
   productId     Int
-
   size          String?
   color         String?
-
   price         Float
-
-  stock         Int      @default(0)
-
+  stock         Int           @default(0)
   image1        String?
   image2        String?
-
   discountValue Float?
   discountType  DiscountType?
-
-  status        Boolean  @default(true)
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  product Product @relation(fields: [productId], references: [id])
+  status        Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  product       Product       @relation(fields: [productId], references: [id])
 }
+
+model Order {
+  id            Int           @id @default(autoincrement())
+  firstName     String
+  lastName      String
+  company       String?
+  country       String
+  city          String
+  phone         String
+  email         String
+  paymentMethod PaymentMethod
+  subtotal      Float
+  total         Float
+  status        OrderStatus   @default(PENDING)
+  createdAt     DateTime      @default(now())
+  state         String
+  streetAddress String
+  zipCode       Int
+  gst           Float
+  products      Json
+  tax           Float         @default(0)
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id           Int     @id @default(autoincrement())
+  orderId      Int
+  productId    Int
+  variantId    Int
+  productName  String
+  size         String?
+  color        String?
+  quantity     Int
+  price        Float
+  total        Float
+  productImage String?
+  order        Order   @relation(fields: [orderId], references: [id])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+}
+
+model ContactInfo {
+  id        Int              @id @default(autoincrement())
+  userId    Int?
+  userName  String
+  email     String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  isStarred Boolean          @default(false)
+  isTrashed Boolean          @default(false)
+  messages  ContactMessage[]
+}
+
+model ContactMessage {
+  id        Int           @id @default(autoincrement())
+  contactId Int
+  sender    MessageSender
+  message   String
+  isRead    Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  isDeleted Boolean       @default(false)
+  isStarred Boolean       @default(false)
+  contact   ContactInfo   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+}
+
 enum DiscountType {
   FIXED
   PERCENTAGE
 }
-model Order {
-  id              Int      @id @default(autoincrement())
 
-  firstName       String
-  lastName        String
-  company         String?
-
-  country         String
-  streetAddress   String
-  city            String
-  zipCode         Int
-  state           String
-
-  phone           String
-  email           String
-
-  paymentMethod   PaymentMethod
-  products        Json
-
-  subtotal        Float
-
-  tax             Float     @default(0)
-
-  gst             Float
-
-  total           Float
-
-  status          OrderStatus @default(PENDING)
-
-  createdAt       DateTime @default(now())
-
-  items           OrderItem[]
-}
 enum PaymentMethod {
   CASH_ON_DELIVERY
   MASTER_CARD
@@ -137,37 +153,12 @@ enum OrderStatus {
   CANCELLED
 }
 
-model OrderItem {
-  id          Int      @id @default(autoincrement())
-
-  orderId     Int
-
-  productId   Int
-  variantId   Int
-
-  productName String
-
-  size        String?
-  color       String?
-
-  quantity    Int
-
-  price       Float
-
-  total       Float
-
-  order       Order    @relation(fields: [orderId], references: [id])
-}
-model User{
-   id          Int      @id @default(autoincrement())
-   name        String
-   email       String @unique
-   password    String
-   role        Role
-   createdAt   DateTime @default(now())
-}
-
-enum Role{
+enum Role {
   ADMIN
   USER
+}
+
+enum MessageSender {
+  ADMIN
+  CUSTOMER
 }

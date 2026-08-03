@@ -72,3 +72,215 @@ td{
 
     background:#ef4444;
 }
+.customer-table-container {
+  width: 100%;
+}
+
+
+/* =========================
+   TOP CONTROLS
+========================= */
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.entries-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.entries-control select {
+  padding: 6px 30px 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.search-control {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.search-control input {
+  width: 235px;
+  height: 32px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+}
+
+.search-control input:focus {
+  border-color: #666;
+}
+
+
+/* =========================
+   TABLE
+========================= */
+
+.table-card {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-card th {
+  padding: 12px;
+  text-align: left;
+  color: #243b63;
+  font-weight: 600;
+  border-bottom: 1px solid #aaa;
+}
+
+.table-card td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.table-card tbody tr:hover {
+  background: #f8f8f8;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.processing {
+  background: #cff4fc;
+  color: #055160;
+}
+
+.status.shipped {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.status.delivered {
+  background: #d1e7dd;
+  color: #0f5132;
+}
+
+.status.cancelled {
+  background: #f8d7da;
+  color: #842029;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.entries-info {
+  color: #555;
+}
+
+
+/* =========================
+   PAGINATION
+========================= */
+
+.pagination {
+  display: flex;
+  gap: 5px;
+}
+
+.pagination button {
+  min-width: 36px;
+  height: 36px;
+  border: none;
+  background: white;
+  color: #243b63;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.pagination button.active {
+  background: #f1f1f1;
+  border: 1px solid #aaa;
+  color: #111;
+}
+
+.pagination button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+
+/* =========================
+   NO RESULTS
+========================= */
+
+.no-results {
+  text-align: center;
+  padding: 30px !important;
+  color: #777;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+  .table-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .search-control {
+    justify-content: flex-start;
+  }
+
+  .search-control input {
+    flex: 1;
+  }
+
+  .table-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+  }
+
+}

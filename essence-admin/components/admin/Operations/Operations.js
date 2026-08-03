@@ -18,7 +18,7 @@ export default function Operations() {
 
         async function load() {
 
-            const res = await fetch("/api/dashboard");
+            const res = await fetch("/admin/api/dashboard");
 
             const data = await res.json();
 

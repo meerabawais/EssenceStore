@@ -94,7 +94,7 @@ function LoginForm() {
           </button>
 
           <p className="text-center mt-3">
-            Don&apos;t have an account? <Link href="/account/register">Register</Link>
+            Don&apos;t have an account? <Link href="/account/register" className="Register-link">Register</Link>
           </p>
         </form>
       </div>

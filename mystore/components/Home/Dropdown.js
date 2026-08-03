@@ -1,59 +1,75 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 export default function Dropdown() {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const response = await fetch("/api/categories");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const data = await response.json();
+
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCategories();
+  }, []);
+
   return (
     <li className="megamenu-item">
       <Link href="/shop">Shop</Link>
 
       <div className="megamenu">
-        <ul className="single-mega cn-col-4">
-  <li className="title">Women's Collection</li>
 
-  <li>
-    <Link href="/shop">Dresses</Link>
-  </li>
+        {loading ? (
+          <div className="single-mega cn-col-4">
+            <p>Loading...</p>
+          </div>
+        ) : (
+          categories.map((category) => (
+            <ul
+              className="single-mega cn-col-4"
+              key={category.id}
+            >
+              <li className="title">
+                <Link href={`/shop?category=${category.id}`}>
+                  {category.name}
+                </Link>
+              </li>
 
-  <li>
-    <Link href="/shop">Blouses & Shirts</Link>
-  </li>
-
-  <li>
-    <Link href="/shop">T-Shirts</Link>
-  </li>
-
-  <li>
-    <Link href="/shop">Rompers</Link>
-  </li>
-
-  <li>
-    <Link href="/shop">Hats</Link>
-  </li>
-</ul>
-
-        <ul className="single-mega cn-col-4">
-          <li className="title">Men's Collection</li>
-          <li><Link href="/shop">T-Shirts</Link></li>
-          <li><Link href="/shop">Polo</Link></li>
-          <li><Link href="/shop">Shirts</Link></li>
-          <li><Link href="/shop">Jackets</Link></li>
-          <li><Link href="/shop">Trench</Link></li>
-        </ul>
-
-
-        <ul className="single-mega cn-col-4">
-          <li className="title">Kid's Collection</li>
-          <li><Link href="/shop">Dresses</Link></li>
-          <li><Link href="/shop">Shirts</Link></li>
-          <li><Link href="/shop">T-Shirts</Link></li>
-          <li><Link href="/shop">Jackets</Link></li>
-          <li><Link href="/shop">Trench</Link></li>
-        </ul>
+              {category.subCategories.map((subCategory) => (
+                <li key={subCategory.id}>
+                  <Link
+                    href={`/shop?category=${category.id}&subcategory=${subCategory.id}`}
+                  >
+                    {subCategory.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ))
+        )}
 
         {/* Banner */}
         <div className="single-mega cn-col-4">
-          <img src="/img/bg-img/bg-6.jpg" alt="Shop Banner" />
+          <img
+            src="/img/bg-img/bg-6.jpg"
+            alt="Shop Banner"
+          />
         </div>
 
       </div>

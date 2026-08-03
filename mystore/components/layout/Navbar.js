@@ -6,6 +6,7 @@ import { FaSearch, FaHeart, FaUser, FaShoppingBag } from "react-icons/fa";
 import Cartsidebar from "./Cartsidebar";
 import Dropdown from "../Home/Dropdown";
 import { useAuth } from "@/context/AuthContext";
+import ProductSearch from "@/components/products/ProductSearch";
 
 export default function Navbar() {
   const[pages,showPages] = useState(false);
@@ -74,15 +75,7 @@ export default function Navbar() {
         <div className="header-meta d-flex clearfix justify-content-end">
 
           <div className="search-area">
-    <form>
-        <input
-            type="search"
-            placeholder="Type for search"
-        />
-        <button type="submit">
-            <FaSearch />
-        </button>
-    </form>
+            <ProductSearch/>
 </div>
 
           <div className="favourite-area">

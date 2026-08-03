@@ -20,17 +20,24 @@ export default function Products() {
   }, []);
 
   async function loadProducts() {
-    const productsRes = await fetch("/api/products");
-    const productsData = await productsRes.json();
+  console.log("Current pathname:", window.location.pathname);
 
-    setProducts(productsData);
+  const productsRes = await fetch("/admin/api/products");
 
-    const categoriesRes = await fetch("/api/categories");
-    const categoriesData = await categoriesRes.json();
-    console.log(categoriesData);
+  console.log("Status:", productsRes.status);
+  console.log("URL:", productsRes.url);
 
-    setCategories(categoriesData);
-  }
+  const productsData = await productsRes.json();
+
+  console.log(productsData);
+
+  setProducts(productsData);
+
+  const categoriesRes = await fetch("/admin/api/categories");
+  const categoriesData = await categoriesRes.json();
+
+  setCategories(categoriesData);
+}
 
   function createProduct() {
     setSelectedProduct({
@@ -81,7 +88,7 @@ export default function Products() {
   async function deleteProduct(id) {
     if (!confirm("Delete this product?")) return;
 
-    await fetch(`/api/products/${id}`, {
+    await fetch(`/admin/api/products/${id}`, {
       method: "DELETE",
     });
 
@@ -89,34 +96,43 @@ export default function Products() {
   }
 
   async function saveProduct(product) {
-    let url = "/api/products";
-    let method = "POST";
+  let url = "/admin/api/products";
+  let method = "POST";
 
-    if (product.id) {
-      url = `/api/products/${product.id}`;
-      method = "PUT";
-    }
-
-    const response = await fetch(url, {
-      method,
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify(product),
-    });
-
-    const saved = await response.json();
-
-    if (product.id) {
-      setProducts((prev) => prev.map((p) => (p.id === saved.id ? saved : p)));
-    } else {
-      setProducts((prev) => [saved, ...prev]);
-    }
-
-    setShowProductModal(false);
+  if (product.id) {
+    url = `/admin/api/products/${product.id}`;
+    method = "PUT";
   }
+
+  const response = await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(product),
+  });
+
+  const saved = await response.json();
+
+  if (product.id) {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === saved.id ? saved : p))
+    );
+  } else {
+    setProducts((prev) => [saved, ...prev]);
+  }
+
+  setShowProductModal(false);
+}
+  function getImageUrl(path) {
+  if (!path) return "";
+
+  if (path.startsWith("http")) {
+    return path;
+  }
+
+  return `/admin${path}`;
+}
 
   return (
     <div className="products-page">
@@ -156,42 +172,67 @@ export default function Products() {
       </div>
 
       <div className="products-grid">
-        {products.map((product) => (
-          <div className="product-card" key={product.id}>
-            <div className="product-image">
-              <img src={product.variants?.[0]?.image1} alt={product.name} />
-            </div>
+  {products.map((product) => (
+    <div className="product-card" key={product.id}>
 
-            <div className="product-content">
-              <h4>{product.name}</h4>
-
-              <p>{product.category?.name}</p>
-
-              <div className="price">${product.variants?.[0]?.price}</div>
-
-              <span className="stock">
-                Stock : {product.variants?.[0]?.stock}
-              </span>
-
-              <div className="mt-3">
-                <button
-                  className="btn btn-sm btn-outline-primary me-2"
-                  onClick={() => editProduct(product)}
-                >
-                  Edit
-                </button>
-
-                <button
-                  className="btn btn-sm btn-outline-danger"
-                  onClick={() => deleteProduct(product.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+      <div className="product-image">
+        <img
+          src={getImageUrl(product.variants?.[0]?.image1)}
+          alt={product.name}
+        />
       </div>
+
+      <div className="product-content">
+
+        <h4>{product.name}</h4>
+
+        <p>{product.category?.name}</p>
+
+        <div className="price">
+          £{product.variants?.[0]?.price}
+        </div>
+
+        <span className="stock">
+          Stock: {product.variants?.[0]?.stock}
+        </span>
+
+        {/* Product Status */}
+        <div className="mt-2">
+          <span
+            className={`badge ${
+              product.status
+                ? "bg-success"
+                : "bg-danger"
+            }`}
+          >
+            {product.status
+              ? "Active"
+              : "Inactive"}
+          </span>
+        </div>
+
+        <div className="mt-3">
+
+          <button
+            className="btn btn-sm btn-outline-primary me-2"
+            onClick={() => editProduct(product)}
+          >
+            Edit
+          </button>
+
+          <button
+            className="btn btn-sm btn-outline-danger"
+            onClick={() => deleteProduct(product.id)}
+          >
+            Delete
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  ))}
+</div>
 
       {showProductModal && (
         <ProductModal

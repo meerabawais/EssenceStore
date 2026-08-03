@@ -22,7 +22,7 @@ export default function OrderItems({
 
     async function fetchProducts() {
 
-        const response = await fetch("/api/products");
+        const response = await fetch("/admin/api/products");
 
         const data = await response.json();
 
@@ -53,23 +53,19 @@ export default function OrderItems({
 
             ...prev,
 
-            {
+           {
+    productId: "",
+    variantId: "",
+    productName: "",
+    productImage: "",
 
-                productId: "",
-                variantId: "",
+    size: "",
+    color: "",
 
-                productName: "",
-
-                size: "",
-                color: "",
-
-                quantity: 1,
-
-                price: 0,
-
-                total: 0,
-
-            }
+    quantity: 1,
+    price: 0,
+    total: 0,
+}
 
         ]);
 
@@ -92,26 +88,23 @@ export default function OrderItems({
         const updated = [...items];
 
         updated[index] = {
+    ...updated[index],
 
-            ...updated[index],
+    productId: product.id,
+    variantId: firstVariant?.id || "",
 
-            productId: product.id,
+    productName: product.name,
+    productImage: firstVariant?.image1 || "",
 
-            variantId: firstVariant?.id || "",
+    size: firstVariant?.size || "",
+    color: firstVariant?.color || "",
 
-            productName: product.name,
+    price: firstVariant?.price || 0,
 
-            size: firstVariant?.size || "",
+    quantity: 1,
 
-            color: firstVariant?.color || "",
-
-            price: firstVariant?.price || 0,
-
-            quantity: 1,
-
-            total: firstVariant?.price || 0,
-
-        };
+    total: firstVariant?.price || 0,
+};
 
         setItems(updated);
 
@@ -127,25 +120,21 @@ export default function OrderItems({
             v => v.id === Number(variantId)
         );
 
-        const updated = [...items];
+       updated[index] = {
+    ...updated[index],
 
-        updated[index] = {
+    variantId: variant.id,
 
-            ...updated[index],
+    productImage: variant.image1,
 
-            variantId: variant.id,
+    size: variant.size,
 
-            size: variant.size,
+    color: variant.color,
 
-            color: variant.color,
+    price: variant.price,
 
-            price: variant.price,
-
-            total:
-                variant.price *
-                updated[index].quantity,
-
-        };
+    total: variant.price * updated[index].quantity,
+};
 
         setItems(updated);
 
@@ -163,6 +152,7 @@ export default function OrderItems({
             updated[index].price * quantity;
 
         setItems(updated);
+        console.log("Selected Item:", updated[index]);
 
     }
 

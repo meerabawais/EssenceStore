@@ -67,6 +67,7 @@ export async function POST(request) {
                 variantId: variant.id,
 
                 productName: variant.product.name,
+                productImage: item.productImage,
 
                 size: variant.size,
 
@@ -178,6 +179,7 @@ total
                 variantId: item.variantId,
 
                 productName: item.productName,
+                productImage: item.productImage,
 
                 size: item.size,
 

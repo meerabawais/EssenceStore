@@ -11,7 +11,7 @@ export default function ActivityCard() {
 
         async function loadStats() {
 
-            const res = await fetch("/api/Profile");
+            const res = await fetch("/admin/api/Profile");
 
             const data = await res.json();
 

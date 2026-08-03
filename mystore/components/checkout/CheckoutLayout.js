@@ -25,20 +25,26 @@ export default function CheckoutLayout(){
 
 });
    console.log(formData);
-   const handlePlaceOrder = async () => {
+const handlePlaceOrder = async () => {
 
+    const orderData = {
+        ...formData,
+        items: cart,
+    };
+
+    console.log("Order Data:", orderData);
+    console.log(cart);
     const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(orderData),
     });
 
     const data = await response.json();
 
     console.log(data);
-
 };
     return(
           <section className="checkout_area section-padding-80">

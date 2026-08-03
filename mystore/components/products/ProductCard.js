@@ -1,59 +1,53 @@
 "use client";
-console.log("ProductCard rendered");
 
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 
 export default function ProductCard({ product }) {
+  const variant = product.variants?.[0];
+
+  if (!variant) return null;
+
+  const oldPrice =
+    variant.discountValue && variant.discountType === "FIXED"
+      ? variant.price + variant.discountValue
+      : null;
+
   return (
     <div className="col-12 col-sm-6 col-lg-4">
       <div className="single-product-wrapper">
 
-        {/* Product Image */}
         <div className="product-img">
-
-          {/* Main Image */}
+          <Link href={`/shop/${product.id}`}>
           <img
-            src={product.images[0]}
+            src={product.variants?.[0]?.image1}
             alt={product.name}
             className="default-img"
           />
 
-          {/* Hover Image */}
-          {product.images[1] && (
+          {variant.image2 && (
             <img
-              src={product.images[1]}
+              src={product.variants?.[0]?.image2}
               alt={product.name}
               className="hover-img"
             />
           )}
+           </Link>
 
-          {/* Offer Badge */}
-          {product.discount && (
+          {oldPrice && (
             <div className="product-badge offer-badge">
-              <span>{product.discount}</span>
+              <span>Sale</span>
             </div>
           )}
 
-          {/* New Badge */}
-          {product.badge === "new" && (
-            <div className="product-badge new-badge">
-              <span>New</span>
-            </div>
-          )}
-
-          {/* Favourite */}
           <div className="product-favourite">
             <a href="#" className="favme">
               <FaHeart />
             </a>
           </div>
-
         </div>
 
-        {/* Product Description */}
         <div className="product-description">
-
           <span>{product.brand}</span>
 
           <Link href={`/shop/${product.id}`}>
@@ -61,27 +55,16 @@ export default function ProductCard({ product }) {
           </Link>
 
           <p className="product-price">
-            {product.oldPrice && (
+            {oldPrice && (
               <span className="old-price">
-                ${product.oldPrice}
+                ${oldPrice}
               </span>
             )}
-            ${product.price}
+            ${variant.price}
           </p>
-
-          {/* Hover Content */}
-          <div className="hover-content">
-            <div className="add-to-cart-btn">
-              <button className="btn essence-btn w-100">
-                Add to Cart
-              </button>
-            </div>
-          </div>
-
         </div>
 
-      </div>.
-      console.log(product);
+      </div>
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   FaShoppingCart,
   FaUserShield,
   FaChevronDown,
+  FaComment
 } from "react-icons/fa";
 
 import {
@@ -144,6 +145,16 @@ export default function Sidebar({isOpen}) {
           >
             <MdReceiptLong />
             All Orders
+          </Link>
+
+          <Link
+            href="/chat"
+            className={
+              isActive("/chat") ? "active" : ""
+            }
+          >
+            <FaComment />
+            Chat
           </Link>
 
         </div>

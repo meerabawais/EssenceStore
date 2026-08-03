@@ -4,6 +4,14 @@ import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 
 export default function ProductCard({ product }) {
+  const variant = product.variants?.[0];
+
+  if (!variant) return null;
+
+  const oldPrice =
+    variant.discountValue && variant.discountType === "FIXED"
+      ? variant.price + variant.discountValue
+      : null;
 
   const addToCart = async () => {
     try {
@@ -14,6 +22,8 @@ export default function ProductCard({ product }) {
         },
         body: JSON.stringify({
           productId: product.id,
+          variantId: variant.id,
+          quantity: 1,
         }),
       });
 
@@ -21,12 +31,9 @@ export default function ProductCard({ product }) {
 
       if (data.success) {
         alert(`${product.name} added to cart!`);
-      } else {
-        alert("Failed to add product.");
       }
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong.");
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -34,30 +41,29 @@ export default function ProductCard({ product }) {
     <div className="col-12 col-sm-6 col-lg-4">
       <div className="single-product-wrapper">
 
-        {/* Product Image */}
         <div className="product-img">
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            style={{ width: "100%", display: "block" }}
-          />
+  <Link href={`/shop/${product.id}`}>
+    <img
+      src={variant.image1}
+      alt={product.name}
+      className="default-img"
+    />
 
-          {product.images[1] && (
-            <img
-              src={product.images[1]}
-              alt={product.name}
-              className="hover-img"
-            />
-          )}
+    {variant.image2 && (
+      <img
+        src={variant.image2}
+        alt={product.name}
+        className="hover-img"
+      />
+    )}
+  </Link>
 
-          {/* Badge */}
-          {product.badge && (
-            <div className={`product-badge ${product.badge}`}>
-              <span>{product.discount || product.badge}</span>
+          {oldPrice && (
+            <div className="product-badge offer-badge">
+              <span>Sale</span>
             </div>
           )}
 
-          {/* Favourite */}
           <div className="product-favourite">
             <button
               className="favme"
@@ -72,7 +78,6 @@ export default function ProductCard({ product }) {
           </div>
         </div>
 
-        {/* Product Description */}
         <div className="product-description">
           <span>{product.brand}</span>
 
@@ -81,28 +86,17 @@ export default function ProductCard({ product }) {
           </Link>
 
           <p className="product-price">
-            {product.oldPrice && (
+            {oldPrice && (
               <span className="old-price">
-                ${product.oldPrice}
+                ${oldPrice}
               </span>
-            )}{" "}
-            ${product.price}
+            )}
+            ${variant.price}
           </p>
 
-          {/* Hover Content */}
-          <div className="hover-content">
-            <div className="add-to-cart-btn">
-              <button
-                className="btn essence-btn w-100"
-                onClick={addToCart}
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
         </div>
 
       </div>
-    </div>
+      </div>
   );
 }

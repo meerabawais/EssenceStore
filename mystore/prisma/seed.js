@@ -1,14 +1,15 @@
 import { PrismaClient, DiscountType } from "@prisma/client";
-import products from "../data/Products.js";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  const hashedPassword = await bcrypt.hash("admin@123", 10);
   await prisma.variant.deleteMany();
   await prisma.product.deleteMany();
   await prisma.subCategory.deleteMany();
   await prisma.category.deleteMany();
+  await prisma.user.deleteMany();
 
   const women = await prisma.category.create({
     data: {

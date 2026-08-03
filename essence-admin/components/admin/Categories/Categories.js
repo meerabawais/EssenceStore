@@ -21,7 +21,7 @@ const [showSubModal, setShowSubModal] = useState(false);
 
     async function loadCategories() {
 
-        const res = await fetch("/api/categories");
+        const res = await fetch("/admin/api/categories");
         const data = await res.json();
 
         setCategories(data);
@@ -69,7 +69,7 @@ const [showSubModal, setShowSubModal] = useState(false);
 
     if(!confirm("Delete category?")) return;
 
-    await fetch(`/api/categories/${id}`,{
+    await fetch(`/admin/api/categories/${id}`,{
         method:"DELETE"
     });
 
@@ -78,7 +78,7 @@ const [showSubModal, setShowSubModal] = useState(false);
 }
     function editSubCategory(sub){
 
-    setSelectedSub(sub);
+    setSelectedSubCategory(sub);
 
     setShowSubModal(true);
 
@@ -88,7 +88,7 @@ async function deleteSubCategory(id){
 
     if(!confirm("Delete subcategory?")) return;
 
-    await fetch(`/api/subcategories/${id}`,{
+    await fetch(`/admin/api/subcategories/${id}`,{
 
         method:"DELETE"
 
@@ -101,7 +101,7 @@ async function deleteSubCategory(id){
 
     if(category.id){
 
-        const res=await fetch(`/api/categories/${category.id}`,{
+        const res=await fetch(`/admin/api/categories/${category.id}`,{
 
             method:"PUT",
 
@@ -136,7 +136,7 @@ async function deleteSubCategory(id){
 
     else{
 
-        const res=await fetch("/api/categories",{
+        const res=await fetch("/admin/api/categories",{
 
             method:"POST",
 
@@ -170,7 +170,7 @@ async function saveSubCategory(sub){
 
     if(sub.id){
 
-        await fetch(`/api/subcategories/${sub.id}`,{
+        await fetch(`/admin/api/subcategories/${sub.id}`,{
 
             method:"PUT",
 
@@ -186,7 +186,7 @@ async function saveSubCategory(sub){
 
     else{
 
-        await fetch("/api/subcategories",{
+        await fetch("/admin/api/subcategories",{
 
             method:"POST",
 

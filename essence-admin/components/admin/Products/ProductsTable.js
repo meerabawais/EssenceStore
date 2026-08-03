@@ -5,6 +5,16 @@ export default function ProductsTable({
   editProduct,
   deleteProduct,
 }) {
+  function getImageUrl(path) {
+    if (!path) return "";
+
+    if (path.startsWith("http")) {
+      return path;
+    }
+
+    return `/admin${path}`;
+  }
+
   return (
     <div className="card shadow-sm mt-4">
       <div className="card-body">
@@ -32,7 +42,7 @@ export default function ProductsTable({
                   <td width="90">
                     {variant?.image1 ? (
                       <img
-                        src={variant.image1}
+                        src={getImageUrl(variant.image1)}
                         alt={product.name}
                         width="70"
                         height="70"
@@ -65,17 +75,23 @@ export default function ProductsTable({
 
                   <td>{product.brand}</td>
 
-                  <td>${variant?.price?.toFixed(2)}</td>
+                  <td>
+                    £{variant?.price?.toFixed(2)}
+                  </td>
 
                   <td>{variant?.stock}</td>
 
                   <td>
                     <span
                       className={`badge ${
-                        product.status ? "bg-success" : "bg-danger"
+                        product.status
+                          ? "bg-success"
+                          : "bg-danger"
                       }`}
                     >
-                      {product.status ? "Active" : "Inactive"}
+                      {product.status
+                        ? "Active"
+                        : "Inactive"}
                     </span>
                   </td>
 
@@ -89,7 +105,9 @@ export default function ProductsTable({
 
                     <button
                       className="btn btn-sm btn-outline-danger"
-                      onClick={() => deleteProduct(product.id)}
+                      onClick={() =>
+                        deleteProduct(product.id)
+                      }
                     >
                       Delete
                     </button>
