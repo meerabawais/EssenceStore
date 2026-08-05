@@ -11,7 +11,7 @@ export default function Profile(){
     const [user, setUser] = useState({
         firstName: "Meerab",
         lastName: "Awais",
-        email: "meerab.awais05@gmail.com",
+        email: "meerab.awais@gmail.com",
         phone: "0303-5550605",
         role: "Administrator",
     })
