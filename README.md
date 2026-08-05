@@ -93,7 +93,7 @@ project-root/
 ├── deploy/
 │   └── nginx.conf            # Production reverse-proxy config
 │
-├── ecosystem.config.js       # PM2 config for production (mystore + admin)
+├── ecosystem.production.config.js       # PM2 config for production (mystore + admin)
 ├── package.json              # Root orchestrator (concurrently)
 ├── .env.example              # Gateway env vars (ports/origins)
 └── README.md
@@ -195,7 +195,7 @@ npm run build   # runs `next build` in mystore/ and essence-admin/
 
 ```bash
 npm install -g pm2
-pm2 start ecosystem.config.js
+pm2 start ecosystem.production.config.js
 pm2 save
 ```
 
@@ -266,7 +266,7 @@ npm install
 cp mystore/.env.example mystore/.env       # then edit with real DATABASE_URL
 cp essence-admin/.env.example essence-admin/.env
 npm run build
-pm2 start ecosystem.config.js
+pm2 start ecosystem.production.config.js
 pm2 save
 sudo cp deploy/nginx.conf /etc/nginx/sites-available/essencestore.conf
 sudo ln -s /etc/nginx/sites-available/essencestore.conf /etc/nginx/sites-enabled/
@@ -389,7 +389,7 @@ no existing route, component, or business logic was removed or rewritten.
 
 To roll back to two independently-run apps:
 
-1. Delete `gateway/`, `ecosystem.config.js`, `deploy/`, the root
+1. Delete `gateway/`, `ecosystem.production.config.js`, `deploy/`, the root
    `package.json`, root `package-lock.json`, root `node_modules/`, and root
    `.env.example`.
 2. In `essence-admin/next.config.mjs`, remove `basePath` and `assetPrefix`.

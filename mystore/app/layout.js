@@ -5,6 +5,8 @@ import { CartProvider } from "./providers/CartProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import "../assets/css/core-style.css";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Essence Store",
   description: "Fashion Ecommerce",
