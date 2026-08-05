@@ -127,7 +127,7 @@ export default function OrderDetails({ order }) {
     <div className="d-flex align-items-center gap-3">
 
       <img
-        src={item.productImage}
+        src={`/admin${item.productImage}`}
         alt={item.productName}
         width={70}
         height={70}

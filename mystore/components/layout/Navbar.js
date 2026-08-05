@@ -2,7 +2,7 @@
 import {useState} from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FaSearch, FaHeart, FaUser, FaShoppingBag } from "react-icons/fa";
+import { FaSearch, FaHeart, FaUser, FaShoppingBag, FaTruck } from "react-icons/fa";
 import Cartsidebar from "./Cartsidebar";
 import Dropdown from "../Home/Dropdown";
 import { useAuth } from "@/context/AuthContext";
@@ -85,17 +85,26 @@ export default function Navbar() {
           </div>
 
           <div className="user-login-info">
-            <Link href={user ? "/user/dashboard" : "/account/login"}>
-              <FaUser />
-            </Link>
-          </div>
+  <Link href={user ? "/user/dashboard" : "/account/login"}>
+    <FaUser />
+  </Link>
+</div>
 
-          <div
-     className="cart-area"
-     onClick={() => setIsCartOpen(true)}>
-    <FaShoppingBag />
-       <span>3</span>
-      </div>
+{user && (
+  <div className="orders-area">
+    <Link href="/my-orders" title="My Orders">
+      <FaTruck />
+    </Link>
+  </div>
+)}
+
+<div
+  className="cart-area"
+  onClick={() => setIsCartOpen(true)}
+>
+  <FaShoppingBag />
+  <span>3</span>
+</div>
 
         </div>
 

@@ -1,5 +1,29 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import fs from "fs/promises";
+import path from "path";
+
+async function saveImage(file) {
+  if (!file || file.size === 0) return null;
+
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  const fileName =
+    file.name;
+
+  const filePath = path.join(
+    process.cwd(),
+    "public",
+    "img",
+    "product-img",
+    fileName
+  );
+
+  await fs.writeFile(filePath, buffer);
+
+  return `/img/product-img/${fileName}`;
+}
 
 export async function GET() {
   try {
@@ -22,82 +46,125 @@ export async function GET() {
     );
   }
 }
+
 export async function POST(request) {
+  try {
+    const formData = await request.formData();
 
-    try {
+    const categoryId = Number(formData.get("categoryId"));
+    const subCategoryId = Number(formData.get("subCategoryId"));
 
-        const body = await request.json();
+    const brand = formData.get("brand");
+    const name = formData.get("name");
+    const description = formData.get("description");
+    const status = formData.get("status");
 
-        const product = await prisma.product.create({
+    const variants = [];
 
-            data: {
+let index = 0;
 
-                categoryId: Number(body.categoryId),
+while (formData.has(`variants[${index}][size]`)) {
 
-                subCategoryId: Number(body.subCategoryId),
+    const image1File = formData.get(
+        `variants[${index}][image1]`
+    );
 
-                brand: body.brand,
+    const image2File = formData.get(
+        `variants[${index}][image2]`
+    );
 
-                name: body.name,
+    const existingImage1 = formData.get(
+        `variants[${index}][existingImage1]`
+    );
 
-                description: body.description,
+    const existingImage2 = formData.get(
+        `variants[${index}][existingImage2]`
+    );
 
-                status: body.status,
+    const image1 =
+        image1File instanceof File && image1File.size > 0
+            ? await saveImage(image1File)
+            : existingImage1;
 
-                variants: {
+    const image2 =
+        image2File instanceof File && image2File.size > 0
+            ? await saveImage(image2File)
+            : existingImage2;
 
-                    create: {
+    variants.push({
 
-                        size: body.variant.size,
+        size: formData.get(
+            `variants[${index}][size]`
+        ),
 
-                        color: body.variant.color,
+        color: formData.get(
+            `variants[${index}][color]`
+        ),
 
-                        price: Number(body.variant.price),
+        price: Number(
+            formData.get(
+                `variants[${index}][price]`
+            )
+        ),
 
-                        stock: Number(body.variant.stock),
+        stock: Number(
+            formData.get(
+                `variants[${index}][stock]`
+            )
+        ),
 
-                        image1: body.variant.image1,
+        discountValue: Number(
+            formData.get(
+                `variants[${index}][discountValue]`
+            )
+        ),
 
-                        image2: body.variant.image2,
+        discountType: formData.get(
+            `variants[${index}][discountType]`
+        ),
 
-                        discountValue: Number(body.variant.discountValue),
+        image1,
 
-                        discountType: body.variant.discountType,
+        image2,
 
-                    }
+    });
 
-                }
+    index++;
 
-            },
+}
 
-            include: {
+    const product = await prisma.product.create({
+      data: {
+        categoryId,
+        subCategoryId,
+        brand,
+        name,
+        description,
+        status: status === "true",
 
-                category: true,
+       variants: {
+    create: variants,
+},
+      },
 
-                subCategory: true,
+      include: {
+        category: true,
+        subCategory: true,
+        variants: true,
+      },
+    });
 
-                variants: true,
+    return NextResponse.json(product);
+  } catch (error) {
+    console.error(error);
 
-            }
-
-        });
-
-        return NextResponse.json(product);
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-        return NextResponse.json(
-
-            {error:error.message},
-
-            {status:500}
-
-        );
-
-    }
-
+    return NextResponse.json(
+      {
+        error: error.message,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }

@@ -67,13 +67,13 @@ export default function ProductInfo({ product, variants , selectedVariant,onVari
       <p className="product-desc">
         {product.description}
       </p>
-      <p className="text-success mt-3">
-
-  {selectedVariant.stock > 0
-    ? `${selectedVariant.stock} items in stock`
-    : "Out of Stock"}
-
-</p>
+    <p
+    className={`stock-text ${
+        selectedVariant.stock > 0
+            ? "text-success"
+            : "text-danger"
+    }`}
+></p>
       <VariantSelector
   variants={variants}
   selectedVariant={selectedVariant}
@@ -87,7 +87,7 @@ export default function ProductInfo({ product, variants , selectedVariant,onVari
           onQuantityChange={setQuantity}
         />
       </div>
-<div className="cart-fav-box d-flex align-items-center">
+<div className="cart-fav-box d-flex align-items-center gap-3">
    <button
     className="btn essence-btn"
     onClick={handleAddToCart}
@@ -97,14 +97,15 @@ export default function ProductInfo({ product, variants , selectedVariant,onVari
 </div>
         <div className="product-favourite ml-4">
           <button
-            style={{
-              border: "none",
-              background: "transparent",
-              fontSize: "28px",
-            }}
-          >
-            ♥
-          </button>
+    className="btn btn-light rounded-circle ms-3"
+    style={{
+        width: "55px",
+        height: "55px",
+        fontSize: "22px"
+    }}
+>
+    ♥
+</button>
         </div>
       </div>
   );

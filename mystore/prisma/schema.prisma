@@ -83,6 +83,8 @@ model Order {
   products      Json
   tax           Float         @default(0)
   items         OrderItem[]
+  userId        Int?
+  user          User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 model OrderItem {
@@ -107,6 +109,7 @@ model User {
   password  String
   role      Role
   createdAt DateTime @default(now())
+  orders    Order[]
 }
 
 model ContactInfo {

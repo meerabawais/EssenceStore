@@ -53,12 +53,13 @@ export default function Products() {
 
       status: true,
 
-      variant: {
+      variants: [
+       {
         size: "",
 
         color: "",
 
-        price: 0,
+        price: "",
 
         stock: 0,
 
@@ -66,24 +67,21 @@ export default function Products() {
 
         image2: "",
 
-        discountValue: 0,
+        discountValue: "",
 
         discountType: "FIXED",
       },
+    ],
     });
 
     setShowProductModal(true);
   }
 
   function editProduct(product) {
-    setSelectedProduct({
-      ...product,
+  setSelectedProduct(product);
 
-      variant: product.variants[0],
-    });
-
-    setShowProductModal(true);
-  }
+  setShowProductModal(true);
+}
 
   async function deleteProduct(id) {
     if (!confirm("Delete this product?")) return;
@@ -94,8 +92,17 @@ export default function Products() {
 
     setProducts((prev) => prev.filter((p) => p.id !== id));
   }
+ function getImageUrl(image) {
+  if (!image) return "/admin/img/product-img/default.png";
 
-  async function saveProduct(product) {
+  if (image.startsWith("/admin")) {
+    return image;
+  }
+
+  return `/admin${image}`;
+}
+
+async function saveProduct(product) {
   let url = "/admin/api/products";
   let method = "POST";
 
@@ -104,12 +111,54 @@ export default function Products() {
     method = "PUT";
   }
 
+  const data = new FormData();
+
+  data.append("name", product.name);
+  data.append("brand", product.brand);
+  data.append("description", product.description);
+  data.append("categoryId", product.categoryId);
+  data.append("subCategoryId", product.subCategoryId);
+
+  product.variants.forEach((variant, index) => {
+
+  if (variant.id) {
+    data.append(`variants[${index}][id]`, variant.id);
+  }
+
+  data.append(`variants[${index}][size]`, variant.size);
+  data.append(`variants[${index}][color]`, variant.color);
+  data.append(`variants[${index}][price]`, variant.price || 0);
+  data.append(`variants[${index}][stock]`, variant.stock);
+  data.append(`variants[${index}][discountValue]`, variant.discountValue || 0);
+  data.append(`variants[${index}][discountType]`, variant.discountType);
+
+  // Image 1
+  if (variant.image1 instanceof File) {
+    data.append(`variants[${index}][image1]`, variant.image1);
+  } else {
+    data.append(
+      `variants[${index}][existingImage1]`,
+      variant.image1 || ""
+    );
+  }
+
+  // Image 2
+  if (variant.image2 instanceof File) {
+    data.append(`variants[${index}][image2]`, variant.image2);
+  } else {
+    data.append(
+      `variants[${index}][existingImage2]`,
+      variant.image2 || ""
+    );
+  }
+
+});
+
+  data.append("status", product.status);
+
   const response = await fetch(url, {
     method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(product),
+    body: data,
   });
 
   const saved = await response.json();
@@ -123,15 +172,6 @@ export default function Products() {
   }
 
   setShowProductModal(false);
-}
-  function getImageUrl(path) {
-  if (!path) return "";
-
-  if (path.startsWith("http")) {
-    return path;
-  }
-
-  return `/admin${path}`;
 }
 
   return (
