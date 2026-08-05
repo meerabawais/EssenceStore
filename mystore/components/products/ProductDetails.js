@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ProductGallery from "./ProductGallery";
 import ProductInfo from "./ProductInfo";
+import "./ProductGallery.css";
 
 export default function ProductDetails({ product }) {
   const [selectedVariant, setSelectedVariant] = useState(
@@ -10,8 +11,14 @@ export default function ProductDetails({ product }) {
   );
 
   return (
-    <div className="row">
-      <div className="col-lg-6">
+    <section className="product-page">
+      <div className="container">
+
+        <div className="product-card">
+
+          <div className="row align-items-center">
+
+      <div className="col-lg-8">
         <ProductGallery
           images={[
             selectedVariant.image1,
@@ -20,7 +27,7 @@ export default function ProductDetails({ product }) {
         />
       </div>
 
-      <div className="col-lg-6 ps-lg-8">
+      <div className="col-lg-4">
         <ProductInfo
           product={product}
           variants={product.variants}
@@ -29,5 +36,9 @@ export default function ProductDetails({ product }) {
         />
       </div>
     </div>
+      </div>
+
+      </div>
+    </section>
   );
 }

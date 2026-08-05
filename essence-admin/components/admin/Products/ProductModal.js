@@ -3,21 +3,31 @@
 import { useState, useEffect } from "react";
 
 export default function ProductModal({ product, categories, onClose, onSave }) {
-  const [formData, setFormData] = useState(product);
-  const [images, setImages] = useState([]);
+  const emptyVariant = {
+  size: "",
+  color: "",
+  price: "",
+  stock: 0,
+  image1: "",
+  image2: "",
+  discountValue: "",
+  discountType: "FIXED",
+};
 
-  useEffect(() => {
-    setFormData(product);
-  }, [product]);
-  useEffect(() => {
-  async function loadImages() {
-    const res = await fetch("/admin/api/Images");
-    const data = await res.json();
-    setImages(data);
-  }
+const [formData, setFormData] = useState({
+  ...product,
+  variants: [],
+});
 
-  loadImages();
-}, []);
+useEffect(() => {
+  setFormData({
+    ...product,
+    variants:
+      product?.variants && product.variants.length > 0
+        ? product.variants
+        : [emptyVariant],
+  });
+}, [product]);
 
   if (!formData) return null;
 
@@ -34,7 +44,38 @@ export default function ProductModal({ product, categories, onClose, onSave }) {
       [name]: type === "checkbox" ? checked : value,
     }));
   }
+  function updateVariant(index, field, value) {
+  setFormData((prev) => {
+    const variants = [...prev.variants];
 
+    variants[index] = {
+      ...variants[index],
+      [field]: value,
+    };
+
+    return {
+      ...prev,
+      variants,
+    };
+  });
+}
+
+function addVariant() {
+  setFormData((prev) => ({
+    ...prev,
+    variants: [
+      ...prev.variants,
+      { ...emptyVariant },
+    ],
+  }));
+}
+
+function removeVariant(index) {
+  setFormData((prev) => ({
+    ...prev,
+    variants: prev.variants.filter((_, i) => i !== index),
+  }));
+}
   return (
     <div
       className="modal fade show"
@@ -140,214 +181,245 @@ export default function ProductModal({ product, categories, onClose, onSave }) {
 
             <hr />
 
-            <h5 className="mb-3">Product Variant</h5>
-            <div className="row">
-              {/* Size */}
+          <h5 className="mb-3">Product Variants</h5>
 
-              <div className="col-md-3 mb-3">
-                <label className="form-label">Size</label>
+{formData.variants.map((variant, index) => (
 
-                <input
-                  className="form-control"
-                  value={formData.variant.size ?? ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
+  <div
+    key={index}
+    className="card mb-4 shadow-sm"
+  >
 
-                      variant: {
-                        ...prev.variant,
+    <div className="card-header d-flex justify-content-between align-items-center">
 
-                        size: e.target.value,
-                      },
-                    }))
-                  }
+      <strong>
+        Variant #{index + 1}
+      </strong>
+
+      {formData.variants.length > 1 && (
+        <button
+          type="button"
+          className="btn btn-sm btn-danger"
+          onClick={() => removeVariant(index)}
+        >
+          Remove
+        </button>
+      )}
+
+    </div>
+
+    <div className="card-body">
+
+      <div className="row">
+
+        {/* Size */}
+
+        <div className="col-md-3 mb-3">
+
+          <label>Size</label>
+
+          <input
+            className="form-control"
+            value={variant.size}
+            onChange={(e) =>
+              updateVariant(index, "size", e.target.value)
+            }
+          />
+
+        </div>
+
+        {/* Color */}
+
+        <div className="col-md-3 mb-3">
+
+          <label>Color</label>
+
+          <input
+            className="form-control"
+            value={variant.color}
+            onChange={(e) =>
+              updateVariant(index, "color", e.target.value)
+            }
+          />
+
+        </div>
+
+        {/* Price */}
+
+        <div className="col-md-3 mb-3">
+
+          <label>Price</label>
+
+          <input
+            type="number"
+            className="form-control"
+            value={variant.price}
+            onChange={(e) =>
+              updateVariant(index, "price", e.target.value)
+            }
+          />
+
+        </div>
+
+        {/* Stock */}
+
+        <div className="col-md-3 mb-3">
+
+          <label>Stock</label>
+
+          <input
+            type="number"
+            className="form-control"
+            value={variant.stock}
+            onChange={(e) =>
+              updateVariant(index, "stock", Number(e.target.value))
+            }
+          />
+
+        </div>
+
+      </div>
+
+      <div className="row">
+
+        {/* Discount */}
+
+        <div className="col-md-6 mb-3">
+
+          <label>Discount Value</label>
+
+          <input
+            type="number"
+            className="form-control"
+            value={variant.discountValue}
+            onChange={(e) =>
+              updateVariant(index, "discountValue", e.target.value)
+            }
+          />
+
+        </div>
+
+        {/* Discount Type */}
+
+        <div className="col-md-6 mb-3">
+
+          <label>Discount Type</label>
+
+          <select
+            className="form-select"
+            value={variant.discountType}
+            onChange={(e) =>
+              updateVariant(index, "discountType", e.target.value)
+            }
+          >
+
+            <option value="FIXED">
+              Fixed
+            </option>
+
+            <option value="PERCENTAGE">
+              Percentage
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+      <div className="row">
+
+        {/* IMAGE 1 */}
+
+        <div className="col-md-6 mb-3">
+
+          <label>Image 1</label>
+
+          {variant.image1 &&
+            typeof variant.image1 === "string" && (
+
+              <div className="mb-2">
+
+                <img
+                  src={variant.image1.startsWith("http")
+                    ? variant.image1
+                    : `/admin${variant.image1}`}
+                  style={{
+                    width: 100,
+                    borderRadius: 8,
+                  }}
                 />
+
               </div>
 
-              {/* Color */}
+            )}
 
-              <div className="col-md-3 mb-3">
-                <label className="form-label">Color</label>
+          <input
+            type="file"
+            className="form-control"
+            accept="image/*"
+            onChange={(e) =>
+              updateVariant(index, "image1", e.target.files[0])
+            }
+          />
 
-                <input
-                  className="form-control"
-                  value={formData.variant.color ?? ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
+        </div>
 
-                      variant: {
-                        ...prev.variant,
+        {/* IMAGE 2 */}
 
-                        color: e.target.value,
-                      },
-                    }))
-                  }
+        <div className="col-md-6 mb-3">
+
+          <label>Image 2</label>
+
+          {variant.image2 &&
+            typeof variant.image2 === "string" && (
+
+              <div className="mb-2">
+
+                <img
+                  src={variant.image2.startsWith("http")
+                    ? variant.image2
+                    : `/admin${variant.image2}`}
+                  style={{
+                    width: 100,
+                    borderRadius: 8,
+                  }}
                 />
+
               </div>
 
-              {/* Price */}
+            )}
 
-              <div className="col-md-3 mb-3">
-                <label className="form-label">Price</label>
+          <input
+            type="file"
+            className="form-control"
+            accept="image/*"
+            onChange={(e) =>
+              updateVariant(index, "image2", e.target.files[0])
+            }
+          />
 
-                <input
-                  type="string"
-                  className="form-control"
-                  value={formData.variant.price ?? ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
+        </div>
 
-                      variant: {
-                        ...prev.variant,
+      </div>
 
-                        price: Number(e.target.value),
-                      },
-                    }))
-                  }
-                />
-              </div>
+    </div>
 
-              {/* Stock */}
+  </div>
 
-              <div className="col-md-3 mb-3">
-                <label className="form-label">Stock</label>
+))}
 
-                <input
-                  type="number"
-                  className="form-control"
-                  value={formData.variant.stock ?? ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
+<div className="mb-4">
 
-                      variant: {
-                        ...prev.variant,
+  <button
+    type="button"
+    className="btn btn-outline-primary"
+    onClick={addVariant}
+  >
+    + Add Variant
+  </button>
 
-                        stock: Number(e.target.value),
-                      },
-                    }))
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="row">
-              {/* Discount */}
-
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Discount Value</label>
-
-                <input
-                  type="string"
-                  className="form-control"
-                  value={formData.variant.discountValue ?? ""}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-
-                      variant: {
-                        ...prev.variant,
-
-                        discountValue: Number(e.target.value),
-                      },
-                    }))
-                  }
-                />
-              </div>
-
-              {/* Discount Type */}
-
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Discount Type</label>
-
-                <select
-                  className="form-select"
-                  value={formData.variant.discountType ?? "FIXED"}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-
-                      variant: {
-                        ...prev.variant,
-
-                        discountType: e.target.value,
-                      },
-                    }))
-                  }
-                >
-                  <option value="FIXED">Fixed</option>
-
-                  <option value="PERCENTAGE">Percentage</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="row">
-              {/* Image1 */}
-
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Image 1</label>
-
-               <select
-  className="form-select"
-  value={formData.variant.image1 ?? ""}
-  onChange={(e) =>
-    setFormData((prev) => ({
-      ...prev,
-      variant: {
-        ...prev.variant,
-        image1: e.target.value,
-      },
-    }))
-  }
->
-  <option value="">Select Image</option>
-
-  {images.map((image) => (
-    <option
-      key={image.path}
-      value={image.path}
-    >
-      {image.name}
-    </option>
-  ))}
-</select>
-              </div>
-
-              {/* Image2 */}
-
-              <div className="col-md-6 mb-3">
-                <label className="form-label">Image 2</label>
-
-               <select
-  className="form-select"
-  value={formData.variant.image2 ?? ""}
-  onChange={(e) =>
-    setFormData((prev) => ({
-      ...prev,
-      variant: {
-        ...prev.variant,
-        image2: e.target.value,
-      },
-    }))
-  }
->
-  <option value="">Select Image</option>
-
-  {images.map((image) => (
-    <option
-      key={image.path}
-      value={image.path}
-    >
-      {image.name}
-    </option>
-  ))}
-</select>
-              </div>
-            </div>
-
+</div>
             <div className="form-check mb-3">
               <input
                 className="form-check-input"

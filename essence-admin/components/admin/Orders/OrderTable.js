@@ -1,101 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function OrdersTable({
   orders,
+  page,
+  setPage,
+  totalPages,
+  totalOrders,
   editOrder,
   deleteOrder,
   createOrder,
+   search,
+    setSearch,
 }) {
-
-  const [search, setSearch] = useState("");
-  const [entriesPerPage, setEntriesPerPage] = useState(4);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const filteredOrders = orders.filter((order) => {
-    const searchValue = search.toLowerCase().trim();
-
-    if (!searchValue) {
-      return true;
-    }
-
-    const customerName =
-      `${order.firstName || ""} ${order.lastName || ""}`.toLowerCase();
-
-    const orderId =
-      String(order.id).toLowerCase();
-
-    const status =
-      order.status?.toLowerCase() || "";
-
-    const payment =
-      order.paymentMethod
-        ?.replaceAll("_", " ")
-        .toLowerCase() || "";
-
-    const email =
-      order.email?.toLowerCase() || "";
-
-    const phone =
-      order.phone?.toLowerCase() || "";
-
-    return (
-      customerName.includes(searchValue) ||
-      orderId.includes(searchValue) ||
-      status.includes(searchValue) ||
-      payment.includes(searchValue) ||
-      email.includes(searchValue) ||
-      phone.includes(searchValue)
-    );
-  });
-  const totalEntries = filteredOrders.length;
-
-  const totalPages = Math.ceil(
-    totalEntries / entriesPerPage
-  );
-
-  const startIndex =
-    (currentPage - 1) * entriesPerPage;
-
-  const endIndex =
-    startIndex + entriesPerPage;
-
-  const currentOrders =
-    filteredOrders.slice(
-      startIndex,
-      endIndex
-    );
-
-  function handleSearch(e) {
-    setSearch(e.target.value);
-    setCurrentPage(1);
-  }
-  function handleEntriesChange(e) {
-    setEntriesPerPage(
-      Number(e.target.value)
-    );
-    setCurrentPage(1);
-  }
-
-
-  useEffect(() => {
-    if (
-      totalPages > 0 &&
-      currentPage > totalPages
-    ) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
-
   return (
     <div className="card shadow-sm mt-4">
-
       <div className="card-body">
 
-        <div className="d-flex justify-content-between align-items-center mb-4">
+        {/* Header */}
 
+        <div className="d-flex justify-content-between align-items-center mb-4">
           <h3>All Orders</h3>
 
           <button
@@ -104,54 +30,30 @@ export default function OrdersTable({
           >
             + New Order
           </button>
-
         </div>
 
-        <div className="d-flex justify-content-between align-items-center mb-3">
+        {/* Search */}
 
-
+        <div className="d-flex justify-content-end mb-3">
           <div className="d-flex align-items-center gap-2">
 
-            <select
-              className="form-select"
-              style={{ width: "80px" }}
-              value={entriesPerPage}
-              onChange={handleEntriesChange}
-            >
-
-              <option value={4}>4</option>
-              <option value={12}>12</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-
-            </select>
-
-            <span>
-              entries per page
-            </span>
-
-          </div>
-
-
-          <div className="d-flex align-items-center gap-2">
-
-            <label>
-              Search:
-            </label>
+            <label>Search:</label>
 
             <input
-              type="text"
               className="form-control"
+              placeholder="Search Orders..."
+              style={{ width: "250px" }}
               value={search}
-              onChange={handleSearch}
-              style={{ width: "220px" }}
-              placeholder="Search orders..."
+    onChange={(e)=>{
+        setPage(1);
+        setSearch(e.target.value);
+    }}
             />
 
           </div>
-
         </div>
 
+        {/* Table */}
 
         <div className="table-responsive">
 
@@ -162,56 +64,36 @@ export default function OrdersTable({
               <tr>
 
                 <th>ID</th>
-
                 <th>Customer</th>
-
                 <th>Items</th>
-
                 <th>Total</th>
-
                 <th>Status</th>
-
                 <th>Date</th>
-
                 <th>Actions</th>
 
               </tr>
 
             </thead>
 
-
             <tbody>
 
-              {currentOrders.length > 0 ? (
+              {orders.length > 0 ? (
 
-                currentOrders.map((order) => (
+                orders.map((order) => (
 
                   <tr key={order.id}>
 
-                    <td>
-                      #{order.id}
-                    </td>
-
+                    <td>#{order.id}</td>
 
                     <td>
-                      {order.firstName}{" "}
-                      {order.lastName}
+                      {order.firstName} {order.lastName}
                     </td>
 
+                    <td>{order.items?.length ?? 0}</td>
 
                     <td>
-                      {order.items
-                        ? order.items.length
-                        : 0}
+                      ${Number(order.total).toFixed(2)}
                     </td>
-
-                    <td>
-                      $
-                      {Number(
-                        order.total || 0
-                      ).toFixed(2)}
-                    </td>
-
 
                     <td>
 
@@ -233,24 +115,18 @@ export default function OrdersTable({
 
                     </td>
 
-
                     <td>
-                      {new Date(
-                        order.createdAt
-                      ).toLocaleDateString()}
+                      {new Date(order.createdAt).toLocaleDateString()}
                     </td>
 
-
                     <td>
-
 
                       <Link
                         href={`/Orders/${order.id}`}
                         className="btn btn-sm btn-outline-dark me-2"
                       >
-                        View Details
+                        View
                       </Link>
-
 
                       <Link
                         href={`/Invoice/${order.id}`}
@@ -259,22 +135,16 @@ export default function OrdersTable({
                         Invoice
                       </Link>
 
-
                       <button
                         className="btn btn-sm btn-outline-primary me-2"
-                        onClick={() =>
-                          editOrder(order)
-                        }
+                        onClick={() => editOrder(order)}
                       >
                         Edit
                       </button>
 
-
                       <button
                         className="btn btn-sm btn-outline-danger"
-                        onClick={() =>
-                          deleteOrder(order.id)
-                        }
+                        onClick={() => deleteOrder(order.id)}
                       >
                         Delete
                       </button>
@@ -293,7 +163,7 @@ export default function OrdersTable({
                     colSpan="7"
                     className="text-center py-4"
                   >
-                    No orders found
+                    No Orders Found
                   </td>
 
                 </tr>
@@ -302,131 +172,49 @@ export default function OrdersTable({
 
             </tbody>
 
-
-            <tfoot>
-
-              <tr>
-
-                <th>ID</th>
-                <th>Customer</th>
-                <th>Items</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-
-              </tr>
-
-            </tfoot>
-
           </table>
 
         </div>
 
+        {/* Footer */}
 
         <div className="d-flex justify-content-between align-items-center mt-3">
 
-
           <div>
 
-            {totalEntries === 0 ? (
-
-              "Showing 0 to 0 of 0 entries"
-
-            ) : (
-
-              <>
-                Showing{" "}
-                {startIndex + 1} to{" "}
-                {Math.min(
-                  endIndex,
-                  totalEntries
-                )}{" "}
-                of{" "}
-                {totalEntries} entries
-              </>
-
-            )}
+            Showing{" "}
+            {orders.length === 0
+              ? 0
+              : (page - 1) * 10 + 1}
+            {" "}to{" "}
+            {Math.min(page * 10, totalOrders)}
+            {" "}of{" "}
+            {totalOrders} entries
 
           </div>
 
-          <div className="d-flex gap-1">
+          <div className="d-flex gap-2">
 
             <button
-              className="btn btn-sm btn-outline-secondary"
-              disabled={currentPage === 1}
-              onClick={() =>
-                setCurrentPage(1)
-              }
+              className="btn btn-outline-primary"
+              disabled={page === 1}
+              onClick={() => setPage(page - 1)}
             >
-              «
+              Previous
             </button>
 
-            <button
-              className="btn btn-sm btn-outline-secondary"
-              disabled={currentPage === 1}
-              onClick={() =>
-                setCurrentPage(
-                  currentPage - 1
-                )
-              }
+            <span
+              className="align-self-center fw-bold"
             >
-              ‹
-            </button>
-
-
-            {Array.from(
-              { length: totalPages },
-              (_, index) => index + 1
-            ).map((page) => (
-
-              <button
-                key={page}
-                className={`btn btn-sm ${
-                  currentPage === page
-                    ? "btn-primary"
-                    : "btn-outline-secondary"
-                }`}
-                onClick={() =>
-                  setCurrentPage(page)
-                }
-              >
-                {page}
-              </button>
-
-            ))}
-
+              Page {page} of {totalPages}
+            </span>
 
             <button
-              className="btn btn-sm btn-outline-secondary"
-              disabled={
-                currentPage === totalPages ||
-                totalPages === 0
-              }
-              onClick={() =>
-                setCurrentPage(
-                  currentPage + 1
-                )
-              }
+              className="btn btn-outline-primary"
+              disabled={page === totalPages}
+              onClick={() => setPage(page + 1)}
             >
-              ›
-            </button>
-
-
-
-            <button
-              className="btn btn-sm btn-outline-secondary"
-              disabled={
-                currentPage === totalPages ||
-                totalPages === 0
-              }
-              onClick={() =>
-                setCurrentPage(
-                  totalPages
-                )
-              }
-            >
-              »
+              Next
             </button>
 
           </div>
@@ -434,7 +222,6 @@ export default function OrdersTable({
         </div>
 
       </div>
-
     </div>
   );
 }

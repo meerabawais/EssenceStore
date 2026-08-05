@@ -204,3 +204,18 @@ a {
      color: #000 !important;
   text-decoration: underline;
 }
+.orders-area {
+    margin: 0 15px;
+    display: flex;
+    align-items: center;
+}
+
+.orders-area a {
+    color: #252525;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.orders-area a:hover {
+    color: #0315ff;
+}

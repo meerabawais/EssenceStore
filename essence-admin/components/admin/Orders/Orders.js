@@ -12,27 +12,44 @@ import "../Operations/Operations.css";
 export default function Orders() {
 
     const [stats, setStats] = useState(null);
+
     const [orders, setOrders] = useState([]);
+
+    const [page, setPage] = useState(1);
+
+    const [pageSize] = useState(10);
+
+    const [totalPages, setTotalPages] = useState(1);
+
+    const [totalOrders, setTotalOrders] = useState(0);
+
     const [showModal, setShowModal] = useState(false);
-const [selectedOrder, setSelectedOrder] = useState(null);
+
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
 
-        async function load() {
+        load(page, search);
 
-            const statsRes = await fetch("/admin/api/dashboard");
-            const statsData = await statsRes.json();
-            setStats(statsData);
+    }, [page, search]);
 
-            const ordersRes = await fetch("/admin/api/All-orders");
-            const ordersData = await ordersRes.json();
-            setOrders(ordersData);
+    async function load(pageNumber = 1, searchText = "") {
 
-        }
+        const statsRes = await fetch("/admin/api/dashboard");
+        const statsData = await statsRes.json();
+        setStats(statsData);
 
-        load();
+        const ordersRes = await fetch(
+            `/admin/api/All-orders?page=${pageNumber}&pageSize=${pageSize}&search=${encodeURIComponent(searchText)}`
+        );
 
-    }, []);
+        const data = await ordersRes.json();
+
+        setOrders(data.orders);
+        setTotalPages(data.totalPages);
+        setTotalOrders(data.totalOrders);
+    }
 
     if (!stats) {
         return <p>Loading...</p>;
@@ -40,96 +57,102 @@ const [selectedOrder, setSelectedOrder] = useState(null);
 
     async function deleteOrder(id) {
 
-    if (!confirm("Delete this order?")) return;
+        if (!confirm("Delete this order?")) return;
 
-    await fetch(`/admin/api/All-orders/${id}`, {
-        method: "DELETE",
-    });
+        await fetch(`/admin/api/All-orders/${id}`, {
+            method: "DELETE",
+        });
 
-    setOrders((prev) => prev.filter((order) => order.id !== id));
-}
-function editOrder(order) {
-    setSelectedOrder(order);
-    setShowModal(true);
-}
-async function updateOrder(order) {
-
-    const isEdit = !!order.id;
-
-    const url = isEdit
-        ? `/admin/api/All-orders/${order.id}`
-        : "/admin/api/All-orders";
-
-    const method = isEdit ? "PUT" : "POST";
-
-    const response = await fetch(url, {
-        method,
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(order),
-    });
-
-    const savedOrder = await response.json();
-
-    if (isEdit) {
-        setOrders(prev =>
-            prev.map(o =>
-                o.id === savedOrder.id ? savedOrder : o
-            )
-        );
-    } else {
-        setOrders(prev => [savedOrder, ...prev]);
+        load(page);
     }
 
-    setShowModal(false);
-}
-function createOrder() {
+    function editOrder(order) {
+        setSelectedOrder(order);
+        setShowModal(true);
+    }
 
-    setSelectedOrder({
+    async function updateOrder(order) {
 
-        firstName: "",
-        lastName: "",
-        company: "",
+        const isEdit = !!order.id;
 
-        email: "",
-        phone: "",
+        const url = isEdit
+            ? `/admin/api/All-orders/${order.id}`
+            : "/admin/api/All-orders";
 
-        country: "",
-        city: "",
-        state: "",
-        streetAddress: "",
-        zipCode: 0,
+        const method = isEdit ? "PUT" : "POST";
 
-        paymentMethod: "CASH_ON_DELIVERY",
+        await fetch(url, {
+            method,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(order),
+        });
 
-        status: "PENDING",
+        setShowModal(false);
 
-        subtotal: 0,
-        gst: 0,
-        tax: 0,
-        total: 0,
+        load(page);
+    }
 
-        items: [],
+    function createOrder() {
 
-    });
+        setSelectedOrder({
 
-    setShowModal(true);
-}
+            firstName: "",
+            lastName: "",
+            company: "",
+
+            email: "",
+            phone: "",
+
+            country: "",
+            city: "",
+            state: "",
+            streetAddress: "",
+            zipCode: 0,
+
+            paymentMethod: "CASH_ON_DELIVERY",
+
+            status: "PENDING",
+
+            subtotal: 0,
+            gst: 0,
+            tax: 0,
+            total: 0,
+
+            items: [],
+
+        });
+
+        setShowModal(true);
+    }
+
     return (
         <>
             <Header />
 
             <KPICards stats={stats} />
 
-            <OrdersTable orders={orders} createOrder={createOrder} editOrder={editOrder} deleteOrder={deleteOrder}/>
-                {showModal && (
-            <OrderModal
-                order={selectedOrder}
-                onClose={() => setShowModal(false)}
-                onSave={updateOrder}
+            <OrdersTable
+                 orders={orders}
+    page={page}
+    setPage={setPage}
+    totalPages={totalPages}
+    totalOrders={totalOrders}
+    search={search}
+    setSearch={setSearch}
+    createOrder={createOrder}
+    editOrder={editOrder}
+    deleteOrder={deleteOrder}
             />
-        )}
+
+            {showModal && (
+                <OrderModal
+                    order={selectedOrder}
+                    onClose={() => setShowModal(false)}
+                    onSave={updateOrder}
+                />
+            )}
         </>
     );
 }

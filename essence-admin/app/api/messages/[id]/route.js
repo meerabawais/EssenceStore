@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function PATCH(request, { params }) {
+export async function POST(request, { params }) {
     try {
         const { id } = await params;
 
@@ -17,14 +17,6 @@ export async function PATCH(request, { params }) {
         const body = await request.json();
 
         const data = {};
-
-        if (typeof body.isStarred === "boolean") {
-            data.isStarred = body.isStarred;
-        }
-
-        if (typeof body.isTrashed === "boolean") {
-            data.isTrashed = body.isTrashed;
-        }
 
         const updatedConversation = await prisma.contactInfo.update({
             where: {

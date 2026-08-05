@@ -1,11 +1,23 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { getSessionUser } from "@/lib/auth";
 
 export async function POST(request) {
     try {
 
         const body = await request.json();
+        const user = await getSessionUser();
+        if(!user){
+            return NextResponse.json({
+                error: "please login to place an order!"
+            },
+        {
+            status: 401,
+
+        }
+    );
+        }
 
         const cookieStore = await cookies();
 
@@ -67,7 +79,7 @@ export async function POST(request) {
                 variantId: variant.id,
 
                 productName: variant.product.name,
-                productImage: item.productImage,
+                productImage: variant.image1,
 
                 size: variant.size,
 
@@ -130,6 +142,7 @@ const total = subtotal + tax + gst;
         const order = await prisma.order.create({
 
     data: {
+        userId: user.id,
 
         firstName: body.firstName,
 
