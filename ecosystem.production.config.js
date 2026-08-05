@@ -13,16 +13,18 @@
 // the Node gateway (gateway/server.js) is a dev-only convenience and must
 // NOT run in production (it's not started here on purpose).
 //
-// Ports come from each app's own `start` script (mystore -> 3002,
-// essence-admin -> 3003) via `next start -p <port>` — that flag takes
-// precedence over a PORT env var, so don't try to override ports here.
+// Runs the `next` binary directly (not via `npm run start`) — PM2's script
+// resolution for "npm" as a bare command is unreliable across apps/cwds
+// (it resolved fine for one app and silently mis-resolved for the other,
+// producing a process that reports "online" but never listens and never
+// logs anything). Invoking next directly sidesteps that.
 module.exports = {
   apps: [
     {
       name: "essencestore-store",
       cwd: __dirname + "/mystore",
-      script: "npm",
-      args: "run start",
+      script: "node_modules/.bin/next",
+      args: "start -p 3002",
       env: {
         NODE_ENV: "production",
       },
@@ -30,8 +32,8 @@ module.exports = {
     {
       name: "essencestore-admin",
       cwd: __dirname + "/essence-admin",
-      script: "npm",
-      args: "run start",
+      script: "node_modules/.bin/next",
+      args: "start -p 3003",
       env: {
         NODE_ENV: "production",
       },
