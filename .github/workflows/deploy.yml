@@ -1,0 +1,82 @@
+name: Deploy to production
+
+# Builds both Next.js apps on the runner, then rsyncs the build output to
+# the production server over SSH and reloads the PM2 processes there.
+# The server never talks to GitHub directly — no git credentials live on it.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Write build-time env files
+        run: |
+          for dir in mystore essence-admin; do
+            cat > "$dir/.env" <<EOF
+          DATABASE_URL=${{ secrets.DATABASE_URL }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          EOF
+          done
+
+      - name: Build mystore
+        working-directory: mystore
+        run: |
+          npm ci
+          npm run build
+          npm prune --omit=dev
+
+      - name: Build essence-admin
+        working-directory: essence-admin
+        run: |
+          npm ci
+          npm run build
+          npm prune --omit=dev
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known_hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Sync mystore build to server
+        run: |
+          rsync -az --delete \
+            --exclude='.env' \
+            --exclude='.next/cache' \
+            mystore/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/EssenceStore/mystore/
+
+      - name: Sync essence-admin build to server
+        run: |
+          rsync -az --delete \
+            --exclude='.env' \
+            --exclude='.next/cache' \
+            essence-admin/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/EssenceStore/essence-admin/
+
+      - name: Sync PM2 ecosystem config
+        run: |
+          rsync -az ecosystem.production.config.js \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/EssenceStore/ecosystem.production.config.js
+
+      - name: Reload PM2 on server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} '
+            cd /var/www/EssenceStore &&
+            pm2 reload ecosystem.production.config.js --update-env &&
+            pm2 save
+          '
