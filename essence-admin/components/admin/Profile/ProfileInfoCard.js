@@ -115,7 +115,7 @@ export default function ProfileCard({user, setUser}){
 
                             </div>
 
-                            <div className="col-md-12 mb-4">
+                          {/* <div className="col-md-12 mb-4">
 
                                 <label>Role</label>
 
@@ -129,7 +129,7 @@ export default function ProfileCard({user, setUser}){
 
                                 />
 
-                            </div>
+                            </div> */}
 
                         </div>
 
