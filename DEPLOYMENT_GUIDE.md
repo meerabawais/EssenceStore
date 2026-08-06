@@ -1,7 +1,7 @@
 # Essence Store Deployment Guide
 
 **Project:** Essence Store (Monorepo with mystore, essence-admin, and gateway)  
-**Date:** August 2024  
+**Date:** August 2026  
 **Server:** AWS EC2 (Ubuntu 24.04 LTS, 8GB RAM)  
 **IP Address:** 13.229.93.26  
 
