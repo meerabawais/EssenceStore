@@ -3,7 +3,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
 
-    const orders = await prisma.order.findMany({
+    const allOrders = await prisma.order.findMany({
+        include: {
+            items: true,
+        },
+    });
+    const recentOrders = await prisma.order.findMany({
         include: {
             items: true
         },
@@ -28,25 +33,25 @@ export async function GET() {
         product: true,
     },
 });
-    const totalRevenue = orders.reduce(
+    const totalRevenue = allOrders.reduce(
         (sum, order) => sum + order.total,
         0
     );
 
-    const totalOrders = orders.length;
+    const totalOrders = allOrders.length;
 
     const averageOrderValue =
         totalOrders > 0
             ? totalRevenue / totalOrders
             : 0;
 
-    const pendingOrders = orders.filter(
+    const pendingOrders = allOrders.filter(
         order => order.status === "PENDING"
     ).length;
 
     const monthlyRevenue = Array(12).fill(0);
 
-orders.forEach((order) => {
+allOrders.forEach((order) => {
 
     const month = new Date(order.createdAt).getMonth();
 
@@ -60,10 +65,10 @@ orders.forEach((order) => {
         totalOrders,
 
         averageOrderValue,
-
+        allOrders,
         pendingOrders,
         monthlyRevenue,
-        recentOrders: orders,
+        recentOrders,
         lowStockProducts,  
     });
 
